@@ -1,0 +1,10 @@
+doctype html
+html
+  head
+    title Payment Failed
+    script(src='https://cdn.tailwindcss.com')
+  body(class='bg-gray-100 flex items-center justify-center h-screen')
+    div(class='bg-white p-6 rounded-lg shadow-lg text-center')
+      h1(class='text-xl font-bold text-red-600') Payment Failed ❌
+      p= error
+      a(href='/', class='text-blue-500 underline mt-4 block') Try Again

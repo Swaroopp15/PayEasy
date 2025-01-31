@@ -1,0 +1,11 @@
+doctype html
+html
+  head
+    title Payment Successful
+    script(src='https://cdn.tailwindcss.com')
+  body(class='bg-gray-100 flex items-center justify-center h-screen')
+    div(class='bg-white p-6 rounded-lg shadow-lg text-center')
+      h1(class='text-xl font-bold text-green-600') Payment Successful 🎉
+      p(class='mt-2') Your transaction ID: #{transactionId}
+      p Amount Paid: ₹#{amount}
+      a(href='/', class='text-blue-500 underline mt-4 block') Make Another Payment
