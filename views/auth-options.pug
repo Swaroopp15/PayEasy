@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    title Authentication Options
+    script(src='https://cdn.tailwindcss.com')
+  body(class='bg-gray-100 flex items-center justify-center h-screen')
+    div(class='bg-white p-6 rounded-lg shadow-lg text-center')
+      h1(class='text-xl font-bold mb-4') Select Authentication Method
+      form(action='/authenticate', method='POST', class='space-y-4')
+        input(type='hidden', name='email', value=email)
+        button(type='submit', name='method', value='pin', class='bg-blue-500 text-white p-2 rounded w-full') Use PIN
+        button(type='submit', name='method', value='otp', class='bg-green-500 text-white p-2 rounded w-full') Use OTP
+      if error
+        p(class='text-red-500 mt-2')= error

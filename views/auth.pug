@@ -1,24 +1,15 @@
 doctype html
 html
   head
-    title Authentication
+    title PIN Authentication
     script(src='https://cdn.tailwindcss.com')
-    script.
-      function updatePlaceholder() {
-        var method = document.querySelector("select[name='method']").value;
-        var input = document.querySelector("input[name='pin']");
-        input.placeholder = method === 'pin' ? 'Enter PIN' : 'Enter OTP';
-      }
   body(class='bg-gray-100 flex items-center justify-center h-screen')
     div(class='bg-white p-6 rounded-lg shadow-lg')
-      h1(class='text-xl font-bold mb-4') Select Authentication Method
-      form(action='/authenticate', method='POST', class='space-y-4')
+      h1(class='text-xl font-bold mb-4') Enter Your PIN
+      form(action='/verify-auth', method='POST', class='space-y-4')
+        input(type='hidden', name='method', value='pin')
         input(type='hidden', name='email', value=email)
-        label(for='method', class='block text-gray-700') Choose Method:
-        select(name='method', class='border rounded p-2 w-full', onchange='updatePlaceholder()')
-          option(value='pin') Secure PIN
-          option(value='otp') Email OTP
-        input(type='password', name='pin', placeholder='Enter PIN (if selected)', class='border rounded p-2 w-full')
-        button(type='submit', class='bg-blue-500 text-white p-2 rounded w-full') Verify
+        input(type='password', name='authInput', placeholder='Enter PIN', class='border rounded p-2 w-full')
+        button(type='submit', class='bg-blue-500 text-white p-2 rounded w-full') Verify PIN
       if error
         p(class='text-red-500 mt-2')= error
