@@ -56,8 +56,8 @@ app.post('/validate-user', (req, res) => {
     }
     
     req.session.email = email; // Store email in session
-    res.render('auth', { email, error: null });
-    req.session.email = email;
+    
+    // Choose one response to send
     res.render('auth-options', { email, error: null });
 });
 
@@ -120,15 +120,15 @@ app.post('/verify-auth', isAuthenticated, (req, res) => {
         const otpData = otpStorage[email];
 
         if (!otpData || otpData.otp.toString() !== authInput || Date.now() > otpData.expiresAt) {
-            return res.render('auth', { email, method, placeholder: 'Enter OTP', error: 'Invalid or expired OTP!' });
+            return res.render('auth-options', { email, method, placeholder: 'Enter OTP', error: 'Invalid or expired OTP!' });
         }
         delete otpStorage[email]; // Remove OTP after successful verification
     }
 
     req.session.verified = true; // Mark as verified
-    res.render('amount', { email, error: null });
-});
 
+    res.render('amount', { email, balance: user.balance, error: null });
+});
 
 // Process Payment
 app.post('/process-payment', isAuthenticated, (req, res) => {

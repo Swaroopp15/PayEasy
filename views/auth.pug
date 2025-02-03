@@ -6,10 +6,10 @@ html
   body(class='bg-gray-100 flex items-center justify-center h-screen')
     div(class='bg-white p-6 rounded-lg shadow-lg')
       h1(class='text-xl font-bold mb-4') Enter Your PIN
-      form(action='/verify-auth', method='POST', class='space-y-4')
-        input(type='hidden', name='method', value='pin')
-        input(type='hidden', name='email', value=email)
-        input(type='password', name='authInput', placeholder='Enter PIN', class='border rounded p-2 w-full')
-        button(type='submit', class='bg-blue-500 text-white p-2 rounded w-full') Verify PIN
+      form(action='/verify-auth' method='POST' class='space-y-4')
+        input(type='hidden' name='method' value='pin')
+        input(type='hidden' name='email', value=email)
+        input(type='password' name='authInput' placeholder='Enter PIN' class='border rounded p-2 w-full')
+        button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Verify PIN
       if error
         p(class='text-red-500 mt-2')= error
