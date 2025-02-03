@@ -57,12 +57,13 @@ app.post('/validate-user', (req, res) => {
     
     req.session.email = email; // Store email in session
     res.render('auth', { email, error: null });
+    req.session.email = email;
+    res.render('auth-options', { email, error: null });
 });
 
 // Authentication (OTP or PIN)
 app.post('/authenticate', async (req, res) => {
-    const { method } = req.body;
-    const email = req.session.email;
+    const { method, email } = req.body;
     const user = bankUsers.find(u => u.email === email);
     
     if (!user) {
@@ -72,8 +73,10 @@ app.post('/authenticate', async (req, res) => {
     req.session.method = method; // Store authentication method
 
     if (method === 'pin') {
+        // Redirect to PIN authentication page
         res.render('auth', { email, method, placeholder: 'Enter PIN', error: null });
     } else if (method === 'otp') {
+        // Generate and send OTP
         const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
         otpStorage[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
 
@@ -88,13 +91,15 @@ app.post('/authenticate', async (req, res) => {
         try {
             await transporter.sendMail(mailOptions);
             console.log(`OTP sent to ${email}`);
-            res.render('auth', { email, method, placeholder: 'Enter OTP', error: null });
+            // Redirect to OTP verification page
+            res.render('otp', { email, error: null });
         } catch (error) {
             console.error('Error sending OTP:', error);
-            res.render('auth', { email, error: 'Failed to send OTP. Try again later.' });
+            res.render('auth-options', { email, error: 'Failed to send OTP. Try again later.' });
         }
     }
 });
+
 
 // Verify OTP or PIN
 app.post('/verify-auth', isAuthenticated, (req, res) => {
@@ -124,6 +129,7 @@ app.post('/verify-auth', isAuthenticated, (req, res) => {
     res.render('amount', { email, error: null });
 });
 
+
 // Process Payment
 app.post('/process-payment', isAuthenticated, (req, res) => {
     if (!req.session.verified) {
@@ -140,7 +146,7 @@ app.post('/process-payment', isAuthenticated, (req, res) => {
     }
     
     if (user.balance < amountNum) {
-        return res.render('amount', { email, error: 'Insufficient balance!' });
+        return res.render('amount', { email, balance: user.balance, error: 'Insufficient balance!' });
     }
     
     user.balance -= amountNum;
