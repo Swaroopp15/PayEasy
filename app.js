@@ -11,17 +11,18 @@ const PORT = 5000;
 const bankUsers = [
     { email: 'swaroop@yopmail.com', pin: '1234', balance: 1000 },
     { email: 'jayanth@yopmail.com', pin: '5678', balance: 800 },
+    { email: 'jayanthpetchetti@gmail.com', pin: '7815', balance: 80000 },
     { email: 'vamsi@yopmail.com', pin: '4321', balance: 500 }
 ];
 
-let otpStorage = {};
+let otpStorage = {}; // { email: { otp, expiresAt }}
 
 // Configure Nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'swarooppalacharla09@gmail.com',  
-        pass: 'Swaroop@15'    
+        user: 'rebook635@gmail.com',  
+        pass: 'jeglhgasdjpmwlwf'    
     }
 });
 
@@ -32,7 +33,15 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Payment Page
+// Middleware to Protect Routes After User Validation
+function isAuthenticated(req, res, next) {
+    if (!req.session.email) {
+        return res.redirect('/');
+    }
+    next();
+}
+
+// Home Page (Payment Page)
 app.get('/', (req, res) => {
     res.render('payment', { error: null });
 });
@@ -45,7 +54,8 @@ app.post('/validate-user', (req, res) => {
     if (!user) {
         return res.render('payment', { error: 'User not found!' });
     }
-    req.session.email = email;
+    
+    req.session.email = email; // Store email in session
     res.render('auth', { email, error: null });
 });
 
@@ -58,16 +68,18 @@ app.post('/authenticate', async (req, res) => {
     if (!user) {
         return res.render('payment', { error: 'User not found!' });
     }
-    
+
+    req.session.method = method; // Store authentication method
+
     if (method === 'pin') {
         res.render('auth', { email, method, placeholder: 'Enter PIN', error: null });
     } else if (method === 'otp') {
         const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
-        otpStorage[email] = otp;
+        otpStorage[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
 
         // Send OTP via email
         const mailOptions = {
-            from: 'your-email@gmail.com',
+            from: 'rebook635@gmail.com', // Fix sender email
             to: email,
             subject: 'Your OTP Code',
             text: `Your OTP code is: ${otp}`
@@ -85,9 +97,10 @@ app.post('/authenticate', async (req, res) => {
 });
 
 // Verify OTP or PIN
-app.post('/verify-auth', (req, res) => {
-    const { method, authInput } = req.body;
+app.post('/verify-auth', isAuthenticated, (req, res) => {
+    const { authInput } = req.body;
     const email = req.session.email;
+    const method = req.session.method;
     const user = bankUsers.find(u => u.email === email);
     
     if (!user) {
@@ -99,17 +112,24 @@ app.post('/verify-auth', (req, res) => {
             return res.render('auth', { email, method, placeholder: 'Enter PIN', error: 'Invalid PIN!' });
         }
     } else if (method === 'otp') {
-        if (!otpStorage[email] || otpStorage[email].toString() !== authInput) {
-            return res.render('auth', { email, method, placeholder: 'Enter OTP', error: 'Invalid OTP!' });
+        const otpData = otpStorage[email];
+
+        if (!otpData || otpData.otp.toString() !== authInput || Date.now() > otpData.expiresAt) {
+            return res.render('auth', { email, method, placeholder: 'Enter OTP', error: 'Invalid or expired OTP!' });
         }
-        delete otpStorage[email];
+        delete otpStorage[email]; // Remove OTP after successful verification
     }
-    
+
+    req.session.verified = true; // Mark as verified
     res.render('amount', { email, error: null });
 });
 
 // Process Payment
-app.post('/process-payment', (req, res) => {
+app.post('/process-payment', isAuthenticated, (req, res) => {
+    if (!req.session.verified) {
+        return res.render('payment', { error: 'Unauthorized access!' });
+    }
+
     const { amount } = req.body;
     const email = req.session.email;
     const user = bankUsers.find(u => u.email === email);
@@ -125,6 +145,8 @@ app.post('/process-payment', (req, res) => {
     
     user.balance -= amountNum;
     const transactionId = `TXN${Date.now()}`;
+
+    req.session.destroy(); // Clear session after payment
 
     res.render('success', { transactionId, amount });
 });
