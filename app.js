@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
 const nodemailer = require('nodemailer');
+const connectDb = require('./database/mongodb');
+const userModel = require('./database/models/userModel');
 
 const app = express();
 const PORT = 5000;
@@ -42,14 +44,14 @@ function isAuthenticated(req, res, next) {
 }
 
 // Home Page (Payment Page)
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {    
     res.render('payment', { error: null });
 });
 
 // Validate User
-app.post('/validate-user', (req, res) => {
+app.post('/validate-user', async(req, res) => {
     const { email } = req.body;
-    const user = bankUsers.find(u => u.email === email);
+    const user = await userModel.findOne({email});
     
     if (!user) {
         return res.render('payment', { error: 'User not found!' });
@@ -64,7 +66,7 @@ app.post('/validate-user', (req, res) => {
 // Authentication (OTP or PIN)
 app.post('/authenticate', async (req, res) => {
     const { method, email } = req.body;
-    const user = bankUsers.find(u => u.email === email);
+    const user = await userModel.findOne({email});
     
     if (!user) {
         return res.render('payment', { error: 'User not found!' });
@@ -83,7 +85,7 @@ app.post('/authenticate', async (req, res) => {
         // Send OTP via email
         const mailOptions = {
             from: 'rebook635@gmail.com', // Fix sender email
-            to: email,
+            to: user.email,
             subject: 'Your OTP Code',
             text: `Your OTP code is: ${otp}`
         };
@@ -102,18 +104,18 @@ app.post('/authenticate', async (req, res) => {
 
 
 // Verify OTP or PIN
-app.post('/verify-auth', isAuthenticated, (req, res) => {
+app.post('/verify-auth', isAuthenticated, async (req, res) => {
     const { authInput } = req.body;
     const email = req.session.email;
     const method = req.session.method;
-    const user = bankUsers.find(u => u.email === email);
+    const user = await userModel.findOne({email});
     
     if (!user) {
         return res.render('payment', { error: 'User not found!' });
     }
     
     if (method === 'pin') {
-        if (user.pin !== authInput) {
+        if (user.passkey !== authInput) {
             return res.render('auth', { email, method, placeholder: 'Enter PIN', error: 'Invalid PIN!' });
         }
     } else if (method === 'otp') {
@@ -131,14 +133,14 @@ app.post('/verify-auth', isAuthenticated, (req, res) => {
 });
 
 // Process Payment
-app.post('/process-payment', isAuthenticated, (req, res) => {
+app.post('/process-payment', isAuthenticated, async (req, res) => {
     if (!req.session.verified) {
         return res.render('payment', { error: 'Unauthorized access!' });
     }
 
     const { amount } = req.body;
     const email = req.session.email;
-    const user = bankUsers.find(u => u.email === email);
+    const user = await userModel.findOne({email});
     const amountNum = parseInt(amount);
     
     if (!user) {
@@ -158,6 +160,13 @@ app.post('/process-payment', isAuthenticated, (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+connectDb()
+  .then(() => {
+    console.log("Mongo db connected");
+  })
+  .then(
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    })
+  );
+
