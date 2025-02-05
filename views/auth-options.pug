@@ -8,6 +8,7 @@ html
       h1(class='text-xl font-bold mb-4') Select Authentication Method
       form(action='/authenticate' method='POST' class='space-y-4')
         input(type='hidden' name='email', value=email)
+        input(type="hidden" value=transaction_id name='transaction_id')
         button(type='submit' name='method' value='pin' class='bg-blue-500 text-white p-2 rounded w-full') Use PIN
         button(type='submit' name='method' value='otp' class='bg-green-500 text-white p-2 rounded w-full') Use OTP
       if error

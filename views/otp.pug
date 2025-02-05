@@ -9,7 +9,7 @@ html
       form(action='/verify-auth' method='POST' class='space-y-4')
         input(type='text' name='authInput', required, placeholder='Enter OTP' class='border rounded p-2 w-full')
         input(type='hidden' name='method' value='otp')
-        input(type='hidden' name='email', value=email)
+        input(type='hidden' name='transaction_id', value=${transaction_id})
         button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Verify OTP
       if error
         p(class='text-red-500 mt-2')= error

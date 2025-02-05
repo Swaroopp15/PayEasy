@@ -5,17 +5,13 @@ const session = require('express-session');
 const nodemailer = require('nodemailer');
 const connectDb = require('./database/mongodb');
 const userModel = require('./database/models/userModel');
+const transactionModel = require('./database/models/transactionModel');
+const transactionRouter = require('./controllers/transaction');
+const { default: mongoose } = require('mongoose');
 
 const app = express();
 const PORT = 5000;
 
-// Dummy Bank Data
-const bankUsers = [
-    { email: 'swaroop@yopmail.com', pin: '1234', balance: 1000 },
-    { email: 'jayanth@yopmail.com', pin: '5678', balance: 800 },
-    { email: 'jayanthpetchetti@gmail.com', pin: '7815', balance: 80000 },
-    { email: 'vamsi@yopmail.com', pin: '4321', balance: 500 }
-];
 
 let otpStorage = {}; // { email: { otp, expiresAt }}
 
@@ -30,6 +26,7 @@ const transporter = nodemailer.createTransport({
 
 // Middleware   
 app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(express.json())
 app.use(session({ secret: 'securekey', resave: false, saveUninitialized: true }));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -49,87 +46,120 @@ app.get('/', async (req, res) => {
 });
 
 // Validate User
-app.post('/validate-user', async(req, res) => {
-    const { email } = req.body;
-    const user = await userModel.findOne({email});
-    
-    if (!user) {
-        return res.render('payment', { error: 'User not found!' });
+app.post('/validate-user', async (req, res) => {
+    try {
+        const { email, transaction_id } = req.body;
+        console.log(transaction_id);
+        
+        // if (!transaction_id || transaction_id.trim() === '') {
+        //     return res.render('payment', { error: 'Invalid transaction ID!' });
+        // }
+
+        console.log("Transaction ID received:", transaction_id);
+        
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.render('payment', { error: 'User not found!' });
+        }
+
+        await transactionModel.updateOne(
+            { _id: transaction_id }, 
+            { $set: { userId: user._id } }
+        );
+
+        req.session.email = email; // Store email in session
+        res.render('auth-options', { email, transaction_id, error: null });
+        
+    } catch (error) {
+        console.log("Error at user validation : ", error);
+        res.render('payment', { error: 'Something went wrong!' });
     }
-    
-    req.session.email = email; // Store email in session
-    
-    // Choose one response to send
-    res.render('auth-options', { email, error: null });
 });
 
 // Authentication (OTP or PIN)
 app.post('/authenticate', async (req, res) => {
-    const { method, email } = req.body;
-    const user = await userModel.findOne({email});
-    
-    if (!user) {
-        return res.render('payment', { error: 'User not found!' });
-    }
-
-    req.session.method = method; // Store authentication method
-
-    if (method === 'pin') {
-        // Redirect to PIN authentication page
-        res.render('auth', { email, method, placeholder: 'Enter PIN', error: null });
-    } else if (method === 'otp') {
-        // Generate and send OTP
-        const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
-        otpStorage[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
-
-        // Send OTP via email
-        const mailOptions = {
-            from: 'rebook635@gmail.com', // Fix sender email
-            to: user.email,
-            subject: 'Your OTP Code',
-            text: `Your OTP code is: ${otp}`
-        };
-
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log(`OTP sent to ${email}`);
-            // Redirect to OTP verification page
-            res.render('otp', { email, error: null });
-        } catch (error) {
-            console.error('Error sending OTP:', error);
-            res.render('auth-options', { email, error: 'Failed to send OTP. Try again later.' });
+    try {
+        
+        const { method, email, transaction_id } = req.body;
+        console.log(transaction_id);
+        const transaction = await transactionModel.findById(transaction_id);
+        console.log(transaction);
+        
+        const user = await userModel.findById(transaction.userId);
+        
+        if (!user) {
+            return res.render('payment', { error: 'User not found!' });
         }
+        
+        req.session.method = method; // Store authentication method
+        
+        if (method === 'pin') {
+            // Redirect to PIN authentication page
+            res.render('auth', { transaction_id, method, placeholder: 'Enter PIN', error: null });
+        } else if (method === 'otp') {
+            // Generate and send OTP
+            const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+            const otpObject = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
+            await transactionModel.updateOne({_id: transaction_id}, { $set: {otp : otpObject} });
+            
+            // Send OTP via email
+            const mailOptions = {
+                from: 'rebook635@gmail.com', // Fix sender email
+                to: user.email,
+                subject: 'Your OTP Code',
+                text: `Your OTP code is: ${otp}`
+            };
+            
+            try {
+                await transporter.sendMail(mailOptions);
+                console.log(`OTP sent to ${email}`);
+                // Redirect to OTP verification page
+                res.render('otp', { transaction_id, error: null });
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                res.render('auth-options', { transaction_id, error: 'Failed to send OTP. Try again later.' });
+            }
+        }
+    } catch (error) {
+        console.log("Error at authentication : ", error);
     }
 });
 
 
 // Verify OTP or PIN
 app.post('/verify-auth', isAuthenticated, async (req, res) => {
-    const { authInput } = req.body;
-    const email = req.session.email;
-    const method = req.session.method;
-    const user = await userModel.findOne({email});
-    
-    if (!user) {
-        return res.render('payment', { error: 'User not found!' });
-    }
-    
-    if (method === 'pin') {
-        if (user.passkey !== authInput) {
-            return res.render('auth', { email, method, placeholder: 'Enter PIN', error: 'Invalid PIN!' });
+    try {
+        
+        const { authInput, transaction_id } = req.body;
+        const email = req.session.email;
+        const method = req.session.method;
+        console.log("transaction id : ", transaction_id);
+        const transaction = await transactionModel.findById(transaction_id);
+        const user = await userModel.findById(transaction.userId);
+        
+        if (!user) {
+            return res.render('payment', { error: 'User not found!' });
         }
-    } else if (method === 'otp') {
-        const otpData = otpStorage[email];
-
-        if (!otpData || otpData.otp.toString() !== authInput || Date.now() > otpData.expiresAt) {
-            return res.render('auth-options', { email, method, placeholder: 'Enter OTP', error: 'Invalid or expired OTP!' });
+        
+        if (method === 'pin') {
+            if (user.passkey !== authInput) {
+                return res.render('auth', { email, method, placeholder: 'Enter PIN', error: 'Invalid PIN!' });
+            }
+        } else if (method === 'otp') {
+            const otpData = transaction.otp;
+            
+            if (!otpData || otpData.otp.toString() !== authInput || Date.now() > otpData.expiresAt) {
+                return res.render('auth-options', { email, method, placeholder: 'Enter OTP', error: 'Invalid or expired OTP!' });
+            }
+            delete otpStorage[email]; // Remove OTP after successful verification
         }
-        delete otpStorage[email]; // Remove OTP after successful verification
+        
+        req.session.verified = true; // Mark as verified
+        
+        res.render('amount', { email, balance: user.balance, error: null });
+    } catch (error) {
+        console.log("Error at verify-auth : ", error);
     }
-
-    req.session.verified = true; // Mark as verified
-
-    res.render('amount', { email, balance: user.balance, error: null });
 });
 
 // Process Payment
@@ -158,6 +188,8 @@ app.post('/process-payment', isAuthenticated, async (req, res) => {
 
     res.render('success', { transactionId, amount });
 });
+
+app.use(transactionRouter);
 
 // Start Server
 connectDb()

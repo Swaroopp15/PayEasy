@@ -2,24 +2,25 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const transactionSchema = new Schema({
-  transactionAmount: {
+  amount: {
     type: Number,
     required: true
   },
   userId : {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'transaction_users',
   },
-  reciptentId : {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+  reciptentEmail : {
+    type: String,
     required: true
   },
   transactionStatus: {
     type: String,
     enum: ['pending' ,'paid', 'cancelled', 'failed'],
     default: 'pending'
+  },
+  otp: {
+    type: Object
   },
   message : {
     type: String

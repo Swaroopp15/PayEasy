@@ -8,7 +8,7 @@ html
       h1(class='text-xl font-bold mb-4') Enter Your PIN
       form(action='/verify-auth' method='POST' class='space-y-4')
         input(type='hidden' name='method' value='pin')
-        input(type='hidden' name='email', value=email)
+        input(type='hidden' name='transaction_id', value=transaction_id)
         input(type='password' name='authInput' placeholder='Enter PIN' class='border rounded p-2 w-full')
         button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Verify PIN
       if error

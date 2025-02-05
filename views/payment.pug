@@ -9,6 +9,7 @@ html
       form(action='/validate-user' method='POST' class='space-y-4')
         label(for='email' class='block text-gray-700') Enter Email:
         input(type='email' name='email', required, class='border rounded p-2 w-full')
+        input(type='hidden' value=transaction_id  name='transaction_id')
         button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Proceed
       if error
         p(class='text-red-500 mt-2')= error

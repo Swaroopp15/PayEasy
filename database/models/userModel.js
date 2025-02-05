@@ -17,11 +17,10 @@ const UserSchema = new Schema({
   passkey : {
     type: String,
     required: true,
-    Selection: false,
   },
   balance : {
     type: Number,
-    default: 0
+    default: 1000
   },
 })
 
