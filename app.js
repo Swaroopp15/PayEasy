@@ -135,6 +135,8 @@ app.post('/verify-auth', isAuthenticated, async (req, res) => {
         const method = req.session.method;
         console.log("transaction id : ", transaction_id);
         const transaction = await transactionModel.findById(transaction_id);
+        console.log(transaction);
+        
         const user = await userModel.findById(transaction.userId);
         
         if (!user) {
