@@ -10,17 +10,24 @@ transactionRouter.post("/init", async (req, res) => {
     
     const transaction = await createTransaction(amount, reciptentEmail);
     console.log(transaction);
-    
-    res.status(200).send({
-      transactionLink: `http://localhost:5000/payment/id=${transaction._id}`,
-      transaction,
-    });
+
+    const transactionLink = `http://localhost:5000/payment/id=${transaction._id}`;
+
+    // here we are checking if the request comes from a browser (Html form submission) as the browser reads (accepts) only Html
+    if (req.headers.accept && req.headers.accept.includes("text/html")) {
+      return res.redirect(transactionLink);
+    }
+
+    // If not a browser request, send JSON response (for API clients / websites using our api like rebook)
+    return res.status(200).json({ transactionLink, transaction });
+
   } catch (error) {
-    res.status(400).send({message : `Error occured at transaction initializing : ${error}`});
+    return res.status(400).json({ message: `Error occurred at transaction initializing: ${error}` });
   }
 });
 
-transactionRouter.get("/payments/id=:id", async (req, res) => {
+
+transactionRouter.get("/payment/id=:id", async (req, res) => {
   const { id } = req.params;
   console.log(id);
   

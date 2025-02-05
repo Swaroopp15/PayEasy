@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title PayEasy - Payment Gateway - Register
+    script(src='https://cdn.tailwindcss.com')
+  body(class='bg-gray-100 flex items-center justify-center h-screen')
+    div(class='bg-white p-6 rounded-lg shadow-lg')
+      h1(class='text-xl font-bold mb-4') Register an Account
+      form(action='/register' method='POST' class='space-y-4')
+        label(for='fullName' class='block text-gray-700') Full Name:
+        input(type='text' name='fullName' required class='border rounded p-2 w-full')
+
+        label(for='email' class='block text-gray-700') Email:
+        input(type='email' name='email' required class='border rounded p-2 w-full')
+
+        label(for='passkey' class='block text-gray-700') Passkey:
+        input(type='password' name='passkey' required class='border rounded p-2 w-full')
+
+        button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Register
+
+      if error
+        p(class='text-red-500 mt-2')= error

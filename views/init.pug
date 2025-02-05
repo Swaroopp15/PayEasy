@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title PayEasy - Make Payment
+    script(src='https://cdn.tailwindcss.com')
+  body(class='bg-gray-100 flex items-center justify-center h-screen')
+    div(class='bg-white p-6 rounded-lg shadow-lg')
+      h1(class='text-xl font-bold mb-4') Make a Payment
+      form(action='/init' method='POST' class='space-y-4')
+        label(for='receiver_email' class='block text-gray-700') Receiver's Email:
+        input(type='email' name='reciptentEmail' required class='border rounded p-2 w-full')
+
+        label(for='amount' class='block text-gray-700') Enter Amount:
+        input(type='number' name='amount' required class='border rounded p-2 w-full')
+
+        button(type='submit' class='bg-purple-500 text-white p-2 rounded w-full') Send Payment
+
+      if error
+        p(class='text-red-500 mt-2')= error

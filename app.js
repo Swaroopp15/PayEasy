@@ -8,6 +8,7 @@ const userModel = require('./database/models/userModel');
 const transactionModel = require('./database/models/transactionModel');
 const transactionRouter = require('./controllers/transaction');
 const { default: mongoose } = require('mongoose');
+const userRouter = require('./controllers/user');
 
 const app = express();
 const PORT = 5000;
@@ -192,6 +193,8 @@ app.post('/process-payment', isAuthenticated, async (req, res) => {
 });
 
 app.use(transactionRouter);
+app.use(userRouter);
+
 
 // Start Server
 connectDb()
