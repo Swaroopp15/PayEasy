@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Authentication</title>
+    <script src="../dist/bundle.js"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h1 class="text-xl font-bold mb-4">Phone Authentication</h1>
+        <input type="text" id="phoneNumber" placeholder="Enter Phone Number" class="border rounded p-2 w-full mb-4">
+        <button onclick="sendOTP()" class="bg-blue-500 text-white p-2 rounded w-full mb-4">Send OTP</button>
+        <input type="text" id="otp" placeholder="Enter OTP" class="border rounded p-2 w-full mb-4">
+        <button onclick="verifyOTP()" class="bg-green-500 text-white p-2 rounded w-full">Verify OTP</button>
+        <div id="recaptcha-container"></div>
+    </div>
+</body>
+
+</html>

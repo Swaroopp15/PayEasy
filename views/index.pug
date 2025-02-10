@@ -1,0 +1,11 @@
+doctype html
+html
+  head
+    title Authentication Method
+    script(src='https://cdn.tailwindcss.com')
+  body(class='bg-gray-100 flex items-center justify-center h-screen')
+    div(class='bg-white p-6 rounded-lg shadow-lg text-center')
+      h1(class='text-xl font-bold mb-4') Choose Authentication Method
+      form(action='/choose-auth-method' method='POST' class='space-y-4')
+        button(type='submit' name='authMethod' value='phone' class='bg-blue-500 text-white p-2 rounded w-full') Authenticate by Phone Number
+        button(type='submit' name='authMethod' value='email' class='bg-green-500 text-white p-2 rounded w-full') Authenticate by Email
