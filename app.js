@@ -43,7 +43,11 @@ function isAuthenticated(req, res, next) {
 
 // Home Page (Payment Page)
 app.get('/', async (req, res) => {    
-    res.render('payment', { error: null });
+    res.render('index', { error: null });
+});
+
+app.get('/dashboard', async (req, res) => {    
+    res.render('dashboard', { error: null });
 });
 
 // Validate User

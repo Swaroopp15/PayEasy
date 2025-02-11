@@ -1,0 +1,80 @@
+doctype html
+html(lang="en")
+  head
+    title PayFlow - Secure Payment Gateway
+    script(src='https://cdn.tailwindcss.com')
+    //- meta(name="description", content="PayFlow is a secure and reliable payment gateway designed to streamline your payment processes. Fast, secure, and easy to integrate.")
+  body.bg-gray-100
+    // Header
+    header.bg-blue-700.text-white.py-12.text-center
+      h1.text-5xl.font-bold PayFlow
+      p.text-xl.mt-4 Your Secure and Reliable Payment Gateway
+      .mt-8
+        a(href="/register", class="bg-white text-blue-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300") Get Started
+
+    // Main Content
+    .container.mx-auto.p-6
+
+      // Features Section
+      section.mt-12
+        h2.text-3xl.font-bold.text-center.text-blue-700 Why Choose PayFlow?
+        .features(class="flex flex-col md:flex-row justify-around mt-8")
+          .feature(class="text-center max-w-xs mb-8 md:mb-0")
+            h2.text-2xl.font-bold.text-blue-700 Fast Transactions
+            p.text-gray-600.mt-2 Process payments in seconds with our lightning-fast technology.
+          .feature(class="text-center max-w-xs mb-8 md:mb-0")
+            h2.text-2xl.font-bold.text-blue-700 Secure Payments
+            p.text-gray-600.mt-2 Your data is safe with our advanced encryption and security protocols.
+          .feature(class="text-center max-w-xs")
+            h2.text-2xl.font-bold.text-blue-700 Easy Integration
+            p.text-gray-600.mt-2 Seamlessly integrate PayFlow into your website or app with our developer-friendly API.
+
+      // Pricing Section
+      section.mt-20
+        h2.text-3xl.font-bold.text-center.text-blue-700 Pricing Plans
+        .pricing(class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8")
+          .plan.bg-white.p-6.rounded-lg.shadow-lg.text-center
+            h3.text-2xl.font-bold.text-blue-700 Starter
+            p.text-gray-600.mt-2 Perfect for small businesses
+            p.text-4xl.font-bold.mt-4 $9.99
+            p.text-gray-600.mt-2 per month
+            ul.list-disc.list-inside.mt-4.text-left
+              li 1,000 transactions/month
+              li Basic support
+              li Limited features
+            a(href="/register", class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
+          .plan.bg-white.p-6.rounded-lg.shadow-lg.text-center
+            h3.text-2xl.font-bold.text-blue-700 Pro
+            p.text-gray-600.mt-2 Ideal for growing businesses
+            p.text-4xl.font-bold.mt-4 $29.99
+            p.text-gray-600.mt-2 per month
+            ul.list-disc.list-inside.mt-4.text-left
+              li 10,000 transactions/month
+              li Priority support
+              li Advanced features
+            a(href="/register", class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
+          .plan.bg-white.p-6.rounded-lg.shadow-lg.text-center
+            h3.text-2xl.font-bold.text-blue-700 Enterprise
+            p.text-gray-600.mt-2 For large-scale businesses
+            p.text-4xl.font-bold.mt-4 $99.99
+            p.text-gray-600.mt-2 per month
+            ul.list-disc.list-inside.mt-4.text-left
+              li Unlimited transactions
+              li 24/7 premium support
+              li All features included
+            a(href="/register", class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
+
+      // Call-to-Action Section
+      section.mt-20.bg-blue-700.text-white.py-12.text-center
+        h2.text-3xl.font-bold Ready to Get Started?
+        p.text-xl.mt-4 Join thousands of businesses using PayFlow to streamline their payments.
+        .mt-8
+          a(href="/register", class="bg-white text-blue-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300") Sign Up Now
+
+    // Footer
+    footer.bg-gray-800.text-white.text-center.py-8.mt-12
+      p &copy; 2023 PayFlow. All rights reserved.
+      p.mt-2
+        a(href="/privacy", class="text-blue-400 hover:text-blue-300") Privacy Policy
+        span.mx-2 | 
+        a(href="/terms", class="text-blue-400 hover:text-blue-300") Terms of Service
