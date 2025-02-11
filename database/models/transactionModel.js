@@ -19,6 +19,10 @@ const transactionSchema = new Schema({
     enum: ['pending' ,'paid', 'cancelled', 'failed'],
     default: 'pending'
   },
+  callbackUrl : {
+    type: String,
+    required: true
+  },
   otp: {
     type: Object
   },

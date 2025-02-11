@@ -27,7 +27,7 @@ const transporter = nodemailer.createTransport({
 
 // Middleware   
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(express.json())
+app.use(express.json())
 app.use(session({ secret: 'securekey', resave: false, saveUninitialized: true }));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));

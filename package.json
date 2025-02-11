@@ -19,7 +19,8 @@
     "mongoose": "^8.9.6",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.9",
-    "pug": "^3.0.3"
+    "pug": "^3.0.3",
+    "uniqid": "^5.4.0"
   },
   "devDependencies": {
     "tailwindcss": "^4.0.1"

@@ -4,14 +4,11 @@ const { createTransaction } = require("../handlers/transactions");
 const transactionRouter = require("express").Router();
 
 transactionRouter.post("/init", async (req, res) => {
-  const { reciptentEmail, amount } = req.body;
+  const { reciptentEmail, amount, callbackUrl } = req.body;
   try {
-    console.log(reciptentEmail);
-    
-    const transaction = await createTransaction(amount, reciptentEmail);
-    console.log(transaction);
-
-    const transactionLink = `http://localhost:5000/payment/id=${transaction._id}`;
+    const callbackUrls = callbackUrl || "http://localhost:3000/init"
+    const transaction = await createTransaction(amount, reciptentEmail, callbackUrls);
+    const transactionLink = `http://localhost:3000/payment/id=${transaction._id}`;
 
     // here we are checking if the request comes from a browser (Html form submission) as the browser reads (accepts) only Html
     if (req.headers.accept && req.headers.accept.includes("text/html")) {
@@ -22,6 +19,8 @@ transactionRouter.post("/init", async (req, res) => {
     return res.status(200).json({ transactionLink, transaction });
 
   } catch (error) {
+    console.log("Error at initaing payment route: ", error);
+    
     return res.status(400).json({ message: `Error occurred at transaction initializing: ${error}` });
   }
 });

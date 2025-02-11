@@ -1,10 +1,11 @@
 const transactionModel = require("../database/models/transactionModel");
 
-const createTransaction = async (amount, reciptentEmail) => {
+const createTransaction = async (amount, reciptentEmail, callbackUrl) => {
   try{
     const transaction = await transactionModel.create({
       amount: amount,
-      reciptentEmail: reciptentEmail
+      reciptentEmail: reciptentEmail,
+      callbackUrl
     })
     return transaction;
   }catch(error) {
