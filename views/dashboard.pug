@@ -1,0 +1,34 @@
+doctype html
+html(lang="en")
+  head
+    title Dashboard - PayFlow
+    script(src='https://cdn.tailwindcss.com')
+  body.bg-gray-100
+    .container.mx-auto.p-6
+      .flex.justify-between.items-center
+        h1.text-3xl.font-bold.text-blue-700 Dashboard
+        .profile.flex.items-center
+          img.w-10.h-10.rounded-full(src='https://via.placeholder.com/40', alt='Profile Picture')
+          span.ml-2.font-semibold Jayanth
+
+      // Search Bar & Make Payment Button
+      .mt-8.flex.justify-between.items-center
+        input(type="text", placeholder="Search transactions...", class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700")
+        button(class="ml-4 px-6 py-2 bg-blue-700 text-white font-bold rounded-lg hover:bg-blue-800") Payment
+
+      // Transactions Table
+      table.w-full.mt-8.bg-white.shadow-lg.rounded-lg
+        thead
+          tr.bg-blue-700.text-white
+            th.px-6.py-3 Transaction ID
+            th.px-6.py-3 Amount
+            th.px-6.py-3 Status
+        tbody
+          tr.border-b
+            td.px-6.py-4 123456
+            td.px-6.py-4 $9.99
+            td.px-6.py-4.text-green-600 Success
+          tr.border-b
+            td.px-6.py-4 789012
+            td.px-6.py-4 $29.99
+            td.px-6.py-4.text-red-600 Failed
