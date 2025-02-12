@@ -34,12 +34,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to Protect Routes After User Validation
-function isAuthenticated(req, res, next) {
-    if (!req.session.email) {
-        return res.redirect('/');
-    }
-    next();
-}
+// function isAuthenticated(req, res, next) {
+//     if (!req.session.email) {
+//         return res.redirect('/');
+//     }
+//     next();
+// }
 
 // Home Page (Payment Page)
 app.get('/', async (req, res) => {    
@@ -54,13 +54,10 @@ app.get('/dashboard', async (req, res) => {
 app.post('/validate-user', async (req, res) => {
     try {
         const { email, transaction_id } = req.body;
-        console.log(transaction_id);
         
         // if (!transaction_id || transaction_id.trim() === '') {
         //     return res.render('payment', { error: 'Invalid transaction ID!' });
         // }
-
-        console.log("Transaction ID received:", transaction_id);
         
         const user = await userModel.findOne({ email });
         if (!user) {
@@ -86,9 +83,7 @@ app.post('/authenticate', async (req, res) => {
     try {
         
         const { method, email, transaction_id } = req.body;
-        console.log(transaction_id);
         const transaction = await transactionModel.findById(transaction_id);
-        console.log(transaction);
         
         const user = await userModel.findById(transaction.userId);
         
@@ -117,7 +112,6 @@ app.post('/authenticate', async (req, res) => {
             
             try {
                 await transporter.sendMail(mailOptions);
-                console.log(`OTP sent to ${email}`);
                 // Redirect to OTP verification page
                 res.render('otp', { transaction_id, error: null });
             } catch (error) {
@@ -132,15 +126,13 @@ app.post('/authenticate', async (req, res) => {
 
 
 // Verify OTP or PIN
-app.post('/verify-auth', isAuthenticated, async (req, res) => {
+app.post('/verify-auth',  async (req, res) => {
     try {
         
         const { authInput, transaction_id } = req.body;
         const email = req.session.email;
         const method = req.session.method;
-        console.log("transaction id : ", transaction_id);
         const transaction = await transactionModel.findById(transaction_id);
-        console.log(transaction);
         
         const user = await userModel.findById(transaction.userId);
         
@@ -170,7 +162,7 @@ app.post('/verify-auth', isAuthenticated, async (req, res) => {
 });
 
 // Process Payment
-app.post('/process-payment', isAuthenticated, async (req, res) => {
+app.post('/process-payment', async (req, res) => {
     if (!req.session.verified) {
         return res.render('payment', { error: 'Unauthorized access!' });
     }
@@ -189,6 +181,7 @@ app.post('/process-payment', isAuthenticated, async (req, res) => {
     }
     
     user.balance -= amountNum;
+    await user.save();
     const transactionId = `TXN${Date.now()}`;
 
     req.session.destroy(); // Clear session after payment

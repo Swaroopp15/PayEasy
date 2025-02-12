@@ -16,7 +16,7 @@ const transactionSchema = new Schema({
   },
   transactionStatus: {
     type: String,
-    enum: ['pending' ,'paid', 'cancelled', 'failed'],
+    enum: ['pending' ,'paid', 'cancelled', 'failed', 'success'],
     default: 'pending'
   },
   callbackUrl : {
