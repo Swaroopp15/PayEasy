@@ -26,9 +26,14 @@ const transporter = nodemailer.createTransport({
 });
 
 // Middleware   
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json())
-app.use(session({ secret: 'securekey', resave: false, saveUninitialized: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({
+  secret: "payeasy", // Change this to a strong secret
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -155,7 +160,7 @@ app.post('/verify-auth',  async (req, res) => {
         
         req.session.verified = true; // Mark as verified
         
-        res.render('amount', { email, balance: user.balance, error: null });
+        res.render('amount', { email, balance: user.balance, error: null, amount: transaction.amount });
     } catch (error) {
         console.log("Error at verify-auth : ", error);
     }

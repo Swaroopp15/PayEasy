@@ -9,4 +9,14 @@ const createUser = async (fullName, email, passkey) => {
   }
 }
 
-module.exports = {createUser}
+const getUser = async (email) => {
+  try {
+    const user = await userModel.findOne({email});
+    return user;
+  }
+  catch(error) {
+    console.log("Error raised at user retrieval : ", error);
+  }
+}
+
+module.exports = {createUser, getUser};

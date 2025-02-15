@@ -8,8 +8,7 @@ html
       h1(class='text-xl font-bold mb-4') Enter Payment Amount
       p(class='mb-2') Your current balance: ₹#{balance}
       form(action='/process-payment' method='POST' class='space-y-4')
-        label(for='amount' class='block text-gray-700') Amount:
-        input(type='number' name='amount', required, min='1' class='border rounded p-2 w-full')
-        button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Pay Now
+        input(type='hidden' name='amount', required, min='1' value=amount class='border rounded p-2 w-full')
+        button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Procced to Pay
   if error
     p(class='text-red-500 mt-2')= error
