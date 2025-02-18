@@ -26,13 +26,14 @@ const transporter = nodemailer.createTransport({
 });
 
 // Middleware   
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: "payeasy", // Change this to a strong secret
+    secret: "payeasy",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Set to true if using HTTPS
+    cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -53,18 +54,23 @@ app.get('/', async (req, res) => {
 
 app.get("/dashboard", async (req, res) => {
     try {
-        if (!req.session.email) {
+        const userId = req.session.userId;
+        
+        if (!userId) {
             return res.redirect("/"); // Redirect to home if not logged in
         }
 
-        const user = await userModel.findOne({ email: req.session.email });
+        const user = await userModel.findById(userId);
+        console.log(user);
+        
         if (!user) {
             return res.render("dashboard", { transactions: [], error: "User not found" });
         }
 
-        const transactions = await transactionModel.find({ userId: user._id });
-
-        res.render("dashboard", { transactions, userName: user.fullname, error: transactions.length ? null : "No Transactions!" });
+        const transactions = await transactionModel.find({ userId });
+        console.log(transactions);
+        
+        res.render("dashboard", { transactions, users: user, error: transactions.length ? null : "No Transactions!" });
     } catch (error) {
         console.error("Error fetching transactions:", error);
         res.render("dashboard", { transactions: [], error: "Failed to load transactions" });

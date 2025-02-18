@@ -52,7 +52,8 @@ userRouter.post("/login", async (req, res) => {
     }
     
     req.session.userId = user._id;
-
+    // console.log(req.session);
+    
     res.redirect("/dashboard");
   } catch (error) {
     console.log("Error at user login route:", error);
@@ -64,17 +65,17 @@ userRouter.post("/login", async (req, res) => {
 userRouter.get("/dashboard", async (req, res) => {
   try {
     const userId = req.session.userId;
-    console.log(userId);
+    console.log("User id" + userId);
     
     if (!userId) {
       console.log("No user ID found in session. Redirecting to login.");
-      return res.redirect("/login");
+      // return res.redirect("/login");
     }
 
     const user = await userModel.findById(userId);
     if (!user) {
       console.log(`No user found with ID: ${userId}`);
-      return res.status(404).json({ message: "User not found" });
+      // return res.status(404).json({ message: "User not found" });
     }
 
     const transactions = await transactionModel.find({ userId }) || [];
@@ -85,7 +86,7 @@ userRouter.get("/dashboard", async (req, res) => {
     res.render("dashboard", { user, transactions });
   } catch (error) {
     console.error("Error at user dashboard route:", error);
-    return res.status(500).json({ message: `Error at user dashboard: ${error.message}` });
+    // return res.status(500).json({ message: `Error at user dashboard: ${error.message}` });
   }
 });
 
