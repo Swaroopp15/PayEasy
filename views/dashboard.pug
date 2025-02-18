@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title Dashboard - PayFlow
+    title Dashboard - PayEasy
     script(src='https://cdn.tailwindcss.com')
   body.bg-gray-100
     .container.mx-auto.p-6
@@ -9,7 +9,7 @@ html(lang="en")
         h1.text-3xl.font-bold.text-blue-700 Dashboard
         .profile.flex.items-center
           img.w-10.h-10.rounded-full(src='https://via.placeholder.com/40', alt='Profile Picture')
-          span.ml-2.font-semibold ramu
+          span.ml-2.font-semibold #{users.fullName}
 
       // Search Bar & Make Payment Button
       .mt-8.flex.justify-between.items-center
@@ -24,11 +24,8 @@ html(lang="en")
             th.px-6.py-3 Amount
             th.px-6.py-3 Status
         tbody
-          tr.border-b
-            td.px-6.py-4 123456
-            td.px-6.py-4 $9.99
-            td.px-6.py-4.text-green-600 Success
-          tr.border-b
-            td.px-6.py-4 789012
-            td.px-6.py-4 $29.99
-            td.px-6.py-4.text-red-600 Failed
+          each transaction in transactions
+            tr.border-b
+              td.px-6.py-4 #{transaction._id}
+              td.px-6.py-4 ₹#{transaction.amount}
+              td.px-6.py-4(class=(transaction.status === 'paid' ? 'text-green-600' : 'text-red-600')) #{transaction.status}
