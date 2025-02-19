@@ -9,6 +9,7 @@ html
       p(class='mb-2') Your current balance: ₹#{balance}
       form(action='/process-payment' method='POST' class='space-y-4')
         input(type='hidden' name='amount', required, min='1' value=amount class='border rounded p-2 w-full')
+        input(type='hidden' name='transaction_id', required, min='1' value=transaction_id class='border rounded p-2 w-full')
         button(type='submit' class='bg-blue-500 text-white p-2 rounded w-full') Procced to Pay
   if error
     p(class='text-red-500 mt-2')= error

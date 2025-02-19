@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Middleware   
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
@@ -68,7 +68,7 @@ app.get("/dashboard", async (req, res) => {
         }
 
         const transactions = await transactionModel.find({ userId });
-        console.log(transactions);
+        // console.log(transactions);
         
         res.render("dashboard", { transactions, users: user, error: transactions.length ? null : "No Transactions!" });
     } catch (error) {
@@ -183,7 +183,7 @@ app.post('/verify-auth', async (req, res) => {
 
         req.session.verified = true; // Mark as verified
 
-        res.render('amount', { email, balance: user.balance, error: null, amount: transaction.amount });
+        res.render('amount', {transaction_id, email, balance: user.balance, error: null, amount: transaction.amount });
     } catch (error) {
         console.log("Error at verify-auth : ", error);
     }
@@ -195,25 +195,28 @@ app.post('/process-payment', async (req, res) => {
         return res.render('payment', { error: 'Unauthorized access!' });
     }
 
-    const { amount } = req.body;
+    const { amount, transaction_id } = req.body;
     const email = req.session.email;
     const user = await userModel.findOne({ email });
     const amountNum = parseInt(amount);
+    const transaction = await transactionModel.findById(transaction_id);
 
     if (!user) {
         return res.render('payment', { error: 'User not found!' });
     }
 
     if (user.balance < amountNum) {
-        return res.render('amount', { email, balance: user.balance, error: 'Insufficient balance!' });
+        return res.render('amount', {transaction_id, email, balance: user.balance, error: 'Insufficient balance!' });
     }
 
     user.balance -= amountNum;
     await user.save();
     const transactionId = `TXN${Date.now()}`;
-
+    
     req.session.destroy(); // Clear session after payment
-
+    if (req.headers.accept && req.headers.accept.includes("text/html")) {
+        return res.redirect(transaction.callbackUrl);
+      }
     res.render('success', { transactionId, amount });
 });
 

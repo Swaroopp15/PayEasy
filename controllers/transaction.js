@@ -7,6 +7,7 @@ const transactionRouter = require("express").Router();
 
 transactionRouter.post("/init", async (req, res) => {
   const { reciptentEmail, amount, callbackUrl } = req.body;
+  
   try {
     const callbackUrls = callbackUrl || "http://localhost:5000/init"
     const transaction = await createTransaction(amount, reciptentEmail, callbackUrls);
@@ -52,7 +53,10 @@ transactionRouter.post('/credit', async (req, res) => {
     const recipient = await userModel.findOne({email: transaction.reciptentEmail});
     recipient.balance = recipient.balance + transaction.amount;
     await recipient.save();
-    
+
+     if (req.headers.accept && req.headers.accept.includes("text/html")) {
+      return res.redirect(transaction.callbackUrl);
+    }
    
     res.status(200).json({ message: 'Credited to recipient successfully' });
 
