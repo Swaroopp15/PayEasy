@@ -1,33 +1,56 @@
 doctype html
 html(lang="en")
   head
-    title Dashboard - PayEasy
+    title PayEasy - Dashboard
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="description", content="Manage your payments and transactions with PayEasy's secure dashboard.")
     script(src='https://cdn.tailwindcss.com')
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel="stylesheet")
+    style.
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .transaction-row:hover {
+        background-color: #f9fafb;
+      }
+
   body.bg-gray-100
-    .container.mx-auto.p-6
-      .flex.justify-between.items-center
+    .container.mx-auto.p-4(class='sm:p-6')
+      // Header Section
+      .flex.justify-between.items-center.flex-wrap.gap-4
         h1.text-3xl.font-bold.text-blue-700 Dashboard
         .profile.flex.items-center
-          img.w-10.h-10.rounded-full(src='https://via.placeholder.com/40', alt='Profile Picture')
+          // User Icon
+          svg.w-10.h-10.rounded-full.bg-blue-100.p-2.text-blue-700(xmlns="http://www.w3.org/2000/svg", fill="none", viewBox="0 0 24 24", stroke="currentColor")
+            path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
           span.ml-2.font-semibold #{users.fullName}
 
       // Search Bar & Make Payment Button
-      .mt-8.flex.justify-between.items-center
-        input(type="text", placeholder="Search transactions...", class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700")
-        button(class="ml-4 px-6 py-2 bg-blue-700 text-white font-bold rounded-lg hover:bg-blue-800") Payment
+      .mt-8.flex.flex-col.gap-4(class='sm:flex-row sm:justify-between sm:items-center')
+        input(type="text", placeholder="Search transactions...", class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:w-2/3")
+        button(class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300") Make Payment
 
-      .mt-8.flex.justify-between.items-center
-        p .text-lg.font-bold.text-gray-700 Total Amount: #{users.balance}
+      // Total Balance Section
+      .mt-8.bg-white.p-6.rounded-lg.shadow-md
+        p.text-lg.font-bold.text-gray-700 Total Amount: ₹#{users.balance}
+
       // Transactions Table
-      table.w-full.mt-8.bg-white.shadow-lg.rounded-lg
-        thead
-          tr.bg-blue-700.text-white
-            th.px-6.py-3 Transaction ID
-            th.px-6.py-3 Amount
-            th.px-6.py-3 Status
-        tbody
-          each transaction in transactions
-            tr.border-b
-              td.px-6.py-4 #{transaction._id}
-              td.px-6.py-4 ₹#{transaction.amount}
-              td.px-6.py-4(class=(transaction.transactionStatus === 'success' ? 'text-green-600' : 'text-red-600')) #{transaction.transactionStatus}
+      .mt-8.bg-white.shadow-lg.rounded-lg.overflow-hidden
+        table.w-full
+          thead.bg-blue-600.text-white
+            tr
+              th.px-6.py-4.text-left Transaction ID
+              th.px-6.py-4.text-left Amount
+              th.px-6.py-4.text-left Status
+          tbody
+            each transaction in transactions
+              tr.transaction-row.border-b(class='hover:bg-gray-50 transition duration-200')
+                td.px-6.py-4 #{transaction._id}
+                td.px-6.py-4 ₹#{transaction.amount}
+                td.px-6.py-4
+                  span(class=(transaction.transactionStatus === 'success' ? 'text-green-600' : 'text-red-600')) #{transaction.transactionStatus}
+
+      // Footer (Optional)
+      footer.mt-8.text-center.text-gray-600
+        p &copy; 2023 PayEasy. All rights reserved.

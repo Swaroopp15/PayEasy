@@ -2,32 +2,41 @@ doctype html
 html(lang="en")
   head
     title PayEasy - Secure Payment Gateway
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="description" content="PayEasy is a secure and reliable payment gateway designed to streamline your payment processes. Fast, secure, and easy to integrate.")
     script(src='https://cdn.tailwindcss.com')
-    //- meta(name="description", content="PayEasy is a secure and reliable payment gateway designed to streamline your payment processes. Fast, secure, and easy to integrate.")
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet")
+    style.
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+
   body.bg-gray-100
     // Header
     header.bg-blue-700.text-white.py-12.text-center
-      h1.text-5xl.font-bold PayEasy
-      p.text-xl.mt-4 Your Secure and Reliable Payment Gateway
-      .mt-8
-        a(href="/register", class="bg-white text-blue-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300") Get Started
+      .container.mx-auto.px-4
+        h1.text-5xl.font-bold.mb-4 PayEasy
+        p.text-xl.mt-4 Your Secure and Reliable Payment Gateway
+        .mt-8
+          a(href="/register" class="bg-white text-blue-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300") Get Started
 
-    .container.mx-auto.p-6
+    .container.mx-auto.px-4
 
       section.mt-12
         h2.text-3xl.font-bold.text-center.text-blue-700 Why Choose PayEasy?
         .features(class="flex flex-col md:flex-row justify-around mt-8")
-          .feature(class="text-center max-w-xs mb-8 md:mb-0")
+          .feature(class="text-center max-w-xs mb-8 md:mb-0 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300")
             h2.text-2xl.font-bold.text-blue-700 Fast Transactions
             p.text-gray-600.mt-2 Process payments in seconds with our lightning-fast technology.
-          .feature(class="text-center max-w-xs mb-8 md:mb-0")
+          .feature(class="text-center max-w-xs mb-8 md:mb-0 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300")
             h2.text-2xl.font-bold.text-blue-700 Secure Payments
             p.text-gray-600.mt-2 Your data is safe with our advanced encryption and security protocols.
-          .feature(class="text-center max-w-xs")
+          .feature(class="text-center max-w-xs p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300")
             h2.text-2xl.font-bold.text-blue-700 Easy Integration
             p.text-gray-600.mt-2 Seamlessly integrate PayEasy into your website or app with our developer-friendly API.
 
-      //- // Pricing Section
+      //- Pricing Section (Commented out)
       //- section.mt-20
       //-   h2.text-3xl.font-bold.text-center.text-blue-700 Pricing Plans
       //-   .pricing(class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8")
@@ -40,7 +49,7 @@ html(lang="en")
       //-         li 1,000 transactions/month
       //-         li Basic support
       //-         li Limited features
-      //-       a(href="/register", class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
+      //-       a(href="/register" class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
       //-     .plan.bg-white.p-6.rounded-lg.shadow-lg.text-center
       //-       h3.text-2xl.font-bold.text-blue-700 Pro
       //-       p.text-gray-600.mt-2 Ideal for growing businesses
@@ -50,7 +59,7 @@ html(lang="en")
       //-         li 10,000 transactions/month
       //-         li Priority support
       //-         li Advanced features
-      //-       a(href="/register", class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
+      //-       a(href="/register" class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
       //-     .plan.bg-white.p-6.rounded-lg.shadow-lg.text-center
       //-       h3.text-2xl.font-bold.text-blue-700 Enterprise
       //-       p.text-gray-600.mt-2 For large-scale businesses
@@ -60,17 +69,19 @@ html(lang="en")
       //-         li Unlimited transactions
       //-         li 24/7 premium support
       //-         li All features included
-      //-       a(href="/register", class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
+      //-       a(href="/register" class="block bg-blue-700 text-white px-6 py-2 rounded-lg mt-6 w-full hover:bg-blue-900 transition duration-300") Choose Plan
 
       section.mt-20.bg-blue-700.text-white.py-12.text-center
-        h2.text-3xl.font-bold Ready to Get Started?
-        p.text-xl.mt-4 Join thousands of businesses using PayEasy to streamline their payments.
-        .mt-8
-          a(href="/register", class="bg-white text-blue-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300") Sign Up Now
+        .container.mx-auto.px-4
+          h2.text-3xl.font-bold Ready to Get Started?
+          p.text-xl.mt-4 Join thousands of businesses using PayEasy to streamline their payments.
+          .mt-8
+            a(href="/register" class="bg-white text-blue-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300") Sign Up Now
 
     footer.bg-gray-800.text-white.text-center.py-8.mt-12
-      p &copy; 2023 PayEasy. All rights reserved.
-      p.mt-2
-        a(href="/privacy", class="text-blue-400 hover:text-blue-300") Privacy Policy
-        span.mx-2 | 
-        a(href="/terms", class="text-blue-400 hover:text-blue-300") Terms of Service
+      .container.mx-auto.px-4
+        p &copy; 2023 PayEasy. All rights reserved.
+        p.mt-2
+          a(href="/privacy" class="text-blue-400 hover:text-blue-300") Privacy Policy
+          span.mx-2 | 
+          a(href="/terms" class="text-blue-400 hover:text-blue-300") Terms of Service

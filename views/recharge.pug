@@ -1,16 +1,27 @@
 doctype html
-html
+html(lang="en")
   head
     title PayEasy - Wallet Recharge
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="description", content="Recharge your PayEasy wallet securely and instantly.")
     script(src='https://cdn.tailwindcss.com')
-  body(class='bg-gray-100 flex items-center justify-center h-screen')
-    div(class='bg-white p-6 rounded-lg shadow-lg')
-      h1(class='text-xl font-bold mb-4') Recharge Wallet
-      form(action='/recharge' method='POST' class='space-y-4')
-        label(for='amount' class='block text-gray-700') Enter Amount:
-        input(type='number' name='amount' required class='border rounded p-2 w-full')
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap", rel="stylesheet")
+    style.
+      body {
+        font-family: 'Inter', sans-serif;
+      }
 
-        button(type='submit' class='bg-green-500 text-white p-2 rounded w-full') Recharge
+  body(class='bg-gray-100 flex items-center justify-center min-h-screen p-4')
+    div(class='bg-white p-8 rounded-lg shadow-lg w-full max-w-md')
+      h1(class='text-2xl font-bold text-green-700 mb-6 text-center') Recharge Wallet
+      form(action='/recharge' method='POST' class='space-y-6')
+        div
+          label(for='amount' class='block text-gray-700 font-medium mb-2') Enter Amount:
+          input(type='number' name='amount' required class='w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-gray-400')
+
+        button(type='submit' class='w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition duration-300') Recharge
 
       if error
-        p(class='text-red-500 mt-2')= error
+        div(class='mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm text-center')
+          p= error
