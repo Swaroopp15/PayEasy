@@ -9,7 +9,6 @@ const transactionModel = require('./database/models/transactionModel');
 const transactionRouter = require('./controllers/transaction');
 const { default: mongoose } = require('mongoose');
 const userRouter = require('./controllers/user');
-const serverless = require('serverless-http');
 
 const app = express();
 const PORT = 5000;
@@ -56,21 +55,21 @@ app.get('/', async (req, res) => {
 app.get("/dashboard", async (req, res) => {
     try {
         const userId = req.session.userId;
-
+        
         if (!userId) {
             return res.redirect("/"); // Redirect to home if not logged in
         }
 
         const user = await userModel.findById(userId);
         console.log(user);
-
+        
         if (!user) {
             return res.render("dashboard", { transactions: [], error: "User not found" });
         }
 
         const transactions = await transactionModel.find({ userId });
         // console.log(transactions);
-
+        
         res.render("dashboard", { transactions, users: user, error: transactions.length ? null : "No Transactions!" });
     } catch (error) {
         console.error("Error fetching transactions:", error);
@@ -184,7 +183,7 @@ app.post('/verify-auth', async (req, res) => {
 
         req.session.verified = true; // Mark as verified
 
-        res.render('amount', { transaction_id, email, balance: user.balance, error: null, amount: transaction.amount });
+        res.render('amount', {transaction_id, email, balance: user.balance, error: null, amount: transaction.amount });
     } catch (error) {
         console.log("Error at verify-auth : ", error);
     }
@@ -207,17 +206,17 @@ app.post('/process-payment', async (req, res) => {
     }
 
     if (user.balance < amountNum) {
-        return res.render('amount', { transaction_id, email, balance: user.balance, error: 'Insufficient balance!' });
+        return res.render('amount', {transaction_id, email, balance: user.balance, error: 'Insufficient balance!' });
     }
 
     user.balance -= amountNum;
     await user.save();
     const transactionId = `TXN${Date.now()}`;
-
+    
     req.session.destroy(); // Clear session after payment
     if (req.headers.accept && req.headers.accept.includes("text/html")) {
         return res.redirect(transaction.callbackUrl);
-    }
+      }
     res.render('success', { transactionId, amount });
 });
 
@@ -236,5 +235,3 @@ connectDb()
         })
     );
 
-module.exports = app;
-module.exports.handler = serverless(app);
